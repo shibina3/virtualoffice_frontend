@@ -82,7 +82,7 @@ export default function PricingPlans({ setCurrentTab, setPlanType }) {
                 <Card.Body>
                 <Card.Title>Montlhy Plan</Card.Title>
                 <Card.Text>
-                    <span><span className='fs-1 fw-bold'>£{servicesAndPlans.reduce((acc, service) => acc + service.montly_price, 0)}</span>/ Per Month</span>
+                    <span><span className='fs-1 fw-bold'>£{servicesAndPlans.reduce((acc, service) => acc + parseFloat(service.montly_price), 0)}</span>/ Per Month</span>
                 </Card.Text>
                 <Card.Text>
                     <span className='text-muted'>Select the services and complete a quick onboarding process to activate your virtual office.</span>
@@ -108,7 +108,7 @@ export default function PricingPlans({ setCurrentTab, setPlanType }) {
                 <Card.Title>Yearly Plan</Card.Title>
                 <span className='text-success position-absolute top-0 profit'>Profit</span>
                 <Card.Text>
-                    <span><span className='fs-1 fw-bold'>£{servicesAndPlans.reduce((acc, service) => acc + service.yearly_price, 0)}</span>/ Per Month</span>
+                    <span><span className='fs-1 fw-bold'>£{servicesAndPlans.reduce((acc, service) => acc + parseFloat(service.yearly_price), 0)}</span>/ Per Month</span>
                 </Card.Text>
                 <Card.Text>
                     <span className='text-muted'>Instantly access your new business address, phone services, and additional features.</span>

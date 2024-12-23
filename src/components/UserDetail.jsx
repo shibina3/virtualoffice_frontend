@@ -64,12 +64,12 @@ export default function UserDetail({ setCurrentTab, setIsDetailsSubmitted }) {
         const s3 = new AWS.S3({
           accessKeyId: "AKIARKBLHXJBJMOVZ2GJ",
           secretAccessKey: "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",
-          region: 'us-east-1',
+          region: 'eu-north-1',
         });
         const user_email = localStorage.getItem('user_email');
         const params = {
           Bucket: 'myvirtualoffices.uk',
-          Key: `uploads/${user_email}/bio`,
+          Key: `uploads/${user_email}/bio/${file.name}`,
           Body: file,
           ContentType: file.type,
         };
@@ -90,32 +90,40 @@ export default function UserDetail({ setCurrentTab, setIsDetailsSubmitted }) {
           }
     }
 
+    const validateForm = () => {
+        // validate all fields except source_of_discovery and comments
+        const requiredFields = ['organisation_name', 'representation_type', 'address_line_1', 'address_line_2', 'city', 'state', 'country', 'zip_code', 'purpose', 'service_start_date', 'post_handling', 'photo_proof', 'proof_of_address'];
+        for (let i = 0; i < requiredFields.length; i++) {
+            if (!userDetailForm[requiredFields[i]]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const getFileAsBase64 = (file) => {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-                reader.readAsDataURL(file);
-            });
-        }
-        
-        const payload = {
-            ...userDetailForm,
-            service_start_date: new Date(userDetailForm.service_start_date).toISOString().split('T')[0],
-            user_email: localStorage.getItem('user_email'),
-            path: "/submit-details"
-        }
 
-        const submitData = await axios.post('https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node', payload, {
-            headers: {
-                'Content-Type': 'application/json'
+        if(validateForm()) {
+        
+            const payload = {
+                ...userDetailForm,
+                service_start_date: new Date(userDetailForm.service_start_date).toISOString().split('T')[0],
+                user_email: localStorage.getItem('user_email'),
+                path: "/submit-details"
             }
-        });
-        if (submitData.status) {
-            setIsDetailsSubmitted(1);
-            setCurrentTab('home');
+
+            const submitData = await axios.post('https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node', payload, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (submitData.status) {
+                setIsDetailsSubmitted(1);
+                setCurrentTab('home');
+            }
+        } else {
+            setErrorMessage('Please fill all the required fields');
         }
     }
 
@@ -124,57 +132,57 @@ export default function UserDetail({ setCurrentTab, setIsDetailsSubmitted }) {
             <Row className='d-flex justify-content-center'>
                 <Form className='w-50' onSubmit={handleSubmit}>
                     <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Label className='ps-1'>Organisation Name</Form.Label>
+                        <Form.Label className='ps-1'>Organisation Name *</Form.Label>
                         <Form.Control type="text" placeholder="Enter organisation name" value={userDetailForm.organisation_name} onChange={(e) => handleChange('organisation_name', e.target.value)} />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Label className='ps-1'>Representation Type</Form.Label>
+                        <Form.Label className='ps-1'>Representation Type *</Form.Label>
                         <Form.Control type="text" placeholder="Enter representation type" value={userDetailForm.representation_type} onChange={(e) => handleChange('representation_type', e.target.value)} />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Label className='ps-1'>Address Line 1</Form.Label>
+                        <Form.Label className='ps-1'>Address Line 1 *</Form.Label>
                         <Form.Control type="text" placeholder="Enter address line 1" value={userDetailForm.address_line_1} onChange={(e) => handleChange('address_line_1', e.target.value)} />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Label className='ps-1'>Address Line 2</Form.Label>
+                        <Form.Label className='ps-1'>Address Line 2 *</Form.Label>
                         <Form.Control type="text" placeholder="Enter address line 2" value={userDetailForm.address_line_2} onChange={(e) => handleChange('address_line_2', e.target.value)} />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Label className='ps-1'>City</Form.Label>
+                        <Form.Label className='ps-1'>City *</Form.Label>
                         <Form.Control type="text" placeholder="Enter city" value={userDetailForm.city} onChange={(e) => handleChange('city', e.target.value)} />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Label className='ps-1'>State</Form.Label>
+                        <Form.Label className='ps-1'>State *</Form.Label>
                         <Form.Control type="text" placeholder="Enter state" value={userDetailForm.state} onChange={(e) => handleChange('state', e.target.value)} />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Label className='ps-1'>Country</Form.Label>
+                        <Form.Label className='ps-1'>Country *</Form.Label>
                         <Form.Control type="text" placeholder="Enter country" value={userDetailForm.country} onChange={(e) => handleChange('country', e.target.value)} />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Label className='ps-1'>Zip Code</Form.Label>
+                        <Form.Label className='ps-1'>Zip Code *</Form.Label>
                         <Form.Control type="text" placeholder="Enter zip code" value={userDetailForm.zip_code} onChange={(e) => handleChange('zip_code', e.target.value)} />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Label className='ps-1'>Purpose</Form.Label>
+                        <Form.Label className='ps-1'>Purpose *</Form.Label>
                         <Form.Control type="text" placeholder="Enter purpose" value={userDetailForm.purpose} onChange={(e) => handleChange('purpose', e.target.value)} />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Label className='ps-1'>Service Start Date</Form.Label>
+                        <Form.Label className='ps-1'>Service Start Date *</Form.Label>
                         <Form.Control type="date" placeholder="Enter date" value={userDetailForm.service_start_date} onChange={(e) => handleChange('service_start_date', e.target.value)} />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Label className='ps-1'>Post Handling</Form.Label>
+                        <Form.Label className='ps-1'>Post Handling *</Form.Label>
                         <Form.Control as="select" value={userDetailForm.post_handling} onChange={(e) => handleChange('post_handling', e.target.value)}>
                             <option value="">Select post handling</option>
                             <option value="open_scan">Open, scan and mail to me</option>
@@ -185,12 +193,12 @@ export default function UserDetail({ setCurrentTab, setIsDetailsSubmitted }) {
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Label className='ps-1'>Photo Proof</Form.Label>
+                        <Form.Label className='ps-1'>Photo Proof *</Form.Label>
                         <Form.Control type="file" onChange={(e) => handleFileChange(e, 'photo_proof')} accept="image/*" />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Label className='ps-1'>Proof of Address</Form.Label>
+                        <Form.Label className='ps-1'>Proof of Address *</Form.Label>
                         <Form.Control type="file" onChange={(e) => handleFileChange(e, 'proof_of_address')} accept="image/*" />
                     </Form.Group>
 

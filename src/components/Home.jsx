@@ -14,20 +14,20 @@ export default function Home({ setPlanType, setCurrentTab }) {
     category: 'Virtual Office',
     title: 'Significant Cost Savings',
     image: '/assets/images/blog1.webp',
-    content: 'Traditional office spaces come with hefty expenses, including rent, ...'
+    content: 'Cut down on overhead costs such as rent, utilities, and office supplies.'
   },
   {
     category: 'Virtual Office',
     title: 'Pay-as-You-Use Services',
     image: '/assets/images/blog2.webp',
-    content: 'With a virtual office, you only pay for what you need. For example,...'
+    content: 'With a virtual office, you only pay for what you need.'
   },
   ,
   {
     category: 'Virtual Office',
     title: 'Increased Productivity',
     image: '/assets/images/blog3.webp',
-    content: 'By allowing employees to work remotely, businesses can reduce commuting...'
+    content: 'Eliminate the daily commute and work from anywhere in the world.'
   }]
 
   useEffect(() => {
@@ -170,7 +170,7 @@ export default function Home({ setPlanType, setCurrentTab }) {
             <Card.Body>
               <Card.Title>Montlhy Plan</Card.Title>
               <Card.Text>
-                <span><span className='fs-1 fw-bold'>£{servicesAndPlans.reduce((acc, service) => acc + service.montly_price, 0)}</span>/ Per Month</span>
+                <span><span className='fs-1 fw-bold'>£{servicesAndPlans.reduce((acc, service) => acc + parseFloat(service.montly_price), 0)}</span>/ Per Month</span>
               </Card.Text>
               <Card.Text>
                 <span className='text-muted'>Select the services and complete a quick onboarding process to activate your virtual office.</span>
@@ -196,7 +196,7 @@ export default function Home({ setPlanType, setCurrentTab }) {
               <Card.Title>Yearly Plan</Card.Title>
               <span className='text-success position-absolute top-0 profit'>Profit</span>
               <Card.Text>
-                <span><span className='fs-1 fw-bold'>£{servicesAndPlans.reduce((acc, service) => acc + service.yearly_price, 0)}</span>/ Per Month</span>
+                <span><span className='fs-1 fw-bold'>£{servicesAndPlans.reduce((acc, service) => acc + parseFloat(service.yearly_price), 0)}</span>/ Per Month</span>
               </Card.Text>
               <Card.Text>
                 <span className='text-muted'>Instantly access your new business address, phone services, and additional features.</span>
@@ -237,7 +237,7 @@ export default function Home({ setPlanType, setCurrentTab }) {
                 <Card.Text>
                   {blog.content}
                 </Card.Text>
-                <Button variant="dark">Read More</Button>
+                {/* <Button variant="dark">Read More</Button> */}
               </Card.Body>
             </Card>
           </Col>

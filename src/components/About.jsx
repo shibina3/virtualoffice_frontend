@@ -78,7 +78,7 @@ export default function About() {
               </Row>
             </Col>
           </Row>
-          <Row className='my-5'>
+          {/* <Row className='my-5'>
             <Col className='d-flex justify-content-center right-border'>
               <Image src="/assets/images/sign.webp" alt="about" className="w-50" />
             </Col>
@@ -86,7 +86,7 @@ export default function About() {
               <h6>Brodie Rogers</h6>
               <span>– Founder Profirm</span>
             </Col>
-          </Row>
+          </Row> */}
         </Col>
       </Row>
       <Row className='my-5'>
@@ -105,7 +105,7 @@ export default function About() {
             <p>
               Our team of experts is here to help you succeed. With years of experience in the industry, we are well-equipped to provide you with the support you need.
             </p>
-            <Button className='text-decoration-none text-dark' variant="link">Read More</Button>
+            {/* <Button className='text-decoration-none text-dark' variant="link">Read More</Button> */}
           </Card>
         </Col>
         <Col>
@@ -114,11 +114,11 @@ export default function About() {
             <p>
               We are here to help you with any queries you may have. Our dedicated team is available 24/7 to provide you with the support you need.
             </p>
-            <Button className='text-decoration-none text-dark' variant="link">Read More</Button>
+            {/* <Button className='text-decoration-none text-dark' variant="link">Read More</Button> */}
           </Card>
         </Col>
       </Row>
-      <Row>
+      {/* <Row>
         <h3 className='text-center my-5'>Meet With Our Expert</h3>
         <p className='mb-0 text-center'>
           With years of experience in the industry, we are well-equipped to provide you with the support you need.
@@ -144,7 +144,7 @@ export default function About() {
             </Col>
           ))
         }
-      </Row>
+      </Row> */}
       {/* Banner Section */}
       <Row className="position-relative my-4">
         <Image

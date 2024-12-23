@@ -6,26 +6,26 @@ export default function Blog() {
     category: 'Virtual Office',
     title: 'Significant Cost Savings',
     image: '/assets/images/blog1.webp',
-    content: 'Traditional office spaces come with hefty expenses, including rent, ...'
+    content: 'Cut down on overhead costs such as rent, utilities, and office supplies.'
   },
   {
     category: 'Virtual Office',
     title: 'Pay-as-You-Use Services',
     image: '/assets/images/blog2.webp',
-    content: 'With a virtual office, you only pay for what you need. For example,...'
+    content: 'With a virtual office, you only pay for what you need.'
   },
   ,
   {
     category: 'Virtual Office',
     title: 'Increased Productivity',
     image: '/assets/images/blog3.webp',
-    content: 'By allowing employees to work remotely, businesses can reduce commuting...'
+    content: 'Eliminate the daily commute and work from anywhere in the world.'
   },
   {
     category: 'Virtual Office',
     title: 'Enhanced Professional Image',
     image: '/assets/images/blog4.webp',
-    content: 'A prestigious business address and professional call handling services...'
+    content: 'Impress clients with a prestigious business address and professional phone answering services.'
   }]
   return (
     <Container className="my-3">
@@ -72,7 +72,7 @@ export default function Blog() {
                 <Card.Text>
                   {blog.content}
                 </Card.Text>
-                <Button variant="dark">Read More</Button>
+                {/* <Button variant="dark">Read More</Button> */}
               </Card.Body>
             </Card>
           </Col>

@@ -41,9 +41,9 @@ export default function Purchase({ planType, setCurrentTab, setBillingData, isDe
     billingForm.selectedService.forEach(serviceId => {
       const service = servicesAndPlans?.find(service => service.id === serviceId);
       if (service && billingForm.selectedPlan === 'yearly') {
-        total += service.yearly_price;
+        total += parseFloat(service.yearly_price);
       } else if(service && billingForm.selectedPlan === 'monthly') {
-        total += service.montly_price;
+        total += parseFloat(service.montly_price);
       }
     });
     setTotalAmount(total);
@@ -75,7 +75,7 @@ export default function Purchase({ planType, setCurrentTab, setBillingData, isDe
 
   const handleBilling = () => {
     if(isDetailsSubmitted === 0) {
-      setAlertMsg('Please complete your details first');
+      setAlertMsg('Please complete the verification to purchase a plan');
       return;
     }
     const billingData = {

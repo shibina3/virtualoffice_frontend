@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Container, Row, Col, Button, Card, Alert, ListGroup, Form, Accordion, Image } from "react-bootstrap";
+import { Container, Row, Col, Button, Card, Alert, ListGroup, Form, Accordion, Image, Table, Tab } from "react-bootstrap";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { GrView } from "react-icons/gr";
 import { IoMdDownload } from "react-icons/io";
@@ -46,7 +46,7 @@ const MyAccount = ({isAdmin, setCurrentTab, setBillingForm }) => {
     files: null,
   });
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const fileInputRef = useRef(null);
+  const fileInputRefs = useRef({});
 
   const getUploadedFiles = async () => {
     const response = await fetch('https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node', {
@@ -311,54 +311,64 @@ const MyAccount = ({isAdmin, setCurrentTab, setBillingForm }) => {
     const s3 = new AWS.S3({
       accessKeyId: "AKIARKBLHXJBJMOVZ2GJ",
       secretAccessKey: "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",
-      region: 'us-east-1',
+      region: 'eu-north-1',
     });
     const user_email = localStorage.getItem('user_email');
     const params = {
       Bucket: 'myvirtualoffices.uk',
-      Key: `uploads/${user_email}/files`,
+      Key: `uploads/${user_email}/files/${file.name}`,
       Body: file,
       ContentType: file.type,
     };
     return s3.upload(params).promise();
   };
 
-    const handleFileUpload = async () => {
-      const payload = {};
-      payload.user_email = uploadFileForm.user_email;
-      payload.files = [];
-      
-      for(let i = 0; i < uploadFileForm?.files.length; i++) {
-        let uploadedImage;
-        try {
-          uploadedImage = await uploadImageToS3(uploadFileForm.files[i]);
-          payload.files.push(uploadedImage.Location);
-        } catch (error) {
-          console.error("Error uploading the image", error);
-        }
+  const handleFileUpload = async (user_email) => {
+    const payload = {};
+    payload.user_email = user_email;
+    payload.files = [];
 
+    const files = uploadFileForm[user_email]?.files || [];
+    for (let i = 0; i < files.length; i++) {
+      let uploadedImage;
+      try {
+        uploadedImage = await uploadImageToS3(files[i]);
+        payload.files.push(uploadedImage.Location);
+      } catch (error) {
+        console.error("Error uploading the image", error);
       }
-      const uploadFileRes = await fetch("https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node", {
+    }
+
+    const uploadFileRes = await fetch(
+      "https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node",
+      {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({...payload, path: "/upload-files"}),
-      });
+        body: JSON.stringify({ ...payload, path: "/upload-files" }),
+      }
+    );
 
     const uploadFileData = await uploadFileRes.json();
 
-    if(uploadFileData.success) {
-      setUploadFileForm({
-        user_email: "",
-        files: null
-      })
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
+    if (uploadFileData.success) {
+      setUploadFileForm((prev) => ({
+        ...prev,
+        [user_email]: { files: null },
+      }));
+      if (fileInputRefs.current[user_email]) {
+        fileInputRefs.current[user_email].value = "";
       }
     }
+  };
 
-  }
+  const handleFileChange = (user_email, files) => {
+    setUploadFileForm((prev) => ({
+      ...prev,
+      [user_email]: { files: Array.from(files) },
+    }));
+  };
 
   const groupUploadedFiles = () => {
     let groupedFiles = {};
@@ -377,7 +387,7 @@ const MyAccount = ({isAdmin, setCurrentTab, setBillingForm }) => {
     const s3 = new AWS.S3({
       accessKeyId: "AKIARKBLHXJBJMOVZ2GJ",
       secretAccessKey: "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",
-      region: 'us-east-1',
+      region: 'eu-north-1',
     });
     const params = {
       Bucket: 'myvirtualoffices.uk',
@@ -457,6 +467,13 @@ const MyAccount = ({isAdmin, setCurrentTab, setBillingForm }) => {
                 getUploadedFiles();
                 setActiveSidebar('uploaded-files')
               }}>Files</ListGroup.Item> : null
+            }
+            {
+              isAdmin ?
+              <ListGroup.Item 
+              active={activeSidebar === "all-users"} 
+              onClick={() => setActiveSidebar('all-users')}
+              >Users</ListGroup.Item> : null
             }
             {
               !isAdmin ? <><ListGroup.Item active={activeSidebar === "addresses"} onClick={() => setActiveSidebar('addresses')}>Addresses</ListGroup.Item>
@@ -585,24 +602,71 @@ const MyAccount = ({isAdmin, setCurrentTab, setBillingForm }) => {
             </Card> :
             activeSidebar === "uploads" ?
             <Card className="p-3">
-              <Form>
-                <Form.Group className="mb-3 w-50">
-                  <Form.Label>Choose User</Form.Label>
-                  <Form.Control as="select" onChange={(e) => setUploadFileForm({...uploadFileForm, user_email: e.target.value})} value={uploadFileForm.user_email}>
-                    <option value="">Select User</option>
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                  <tbody>
                     {
                       allUsers.map((user, index) => (
-                        <option key={index} value={user.user_email} >{user.user_email}</option>
+                        <tr key={index}>
+                          <td>{user.user_email}</td>
+                          <td>
+                          <Form.Group style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '10px'}}>
+                            <Form.Control
+                              type="file"
+                              multiple
+                              ref={(ref) => (fileInputRefs.current[user.user_email] = ref)}
+                              onChange={(e) => handleFileChange(user.user_email, e.target.files)}
+                              className="w-75"
+                            />
+                            <Button
+                              variant="dark"
+                              className="mt-2"
+                              onClick={() => handleFileUpload(user.user_email)}
+                            >
+                              Upload
+                            </Button>
+                          </Form.Group>
+                          </td>
+                        </tr>
                       ))
                     }
-                  </Form.Control>
-                </Form.Group>
-                <Form.Group className="mb-3 w-50">
-                  <Form.Label>Choose File</Form.Label>
-                  <Form.Control type="file" multiple ref={fileInputRef} onChange={(e) => setUploadFileForm({...uploadFileForm, files: Array.from(e.target.files)})} />
-                </Form.Group>
-                <Button variant="dark" onClick={handleFileUpload}>Upload</Button>
-              </Form>
+                  </tbody>
+
+              </Table>
+            </Card> :
+            activeSidebar === "all-users" ?
+            <Card className="p-3">
+              <Accordion defaultActiveKey="0">
+              {
+                allUsers.map((user, index) => (
+                  <Accordion.Item eventKey={index} key={index}>
+                    <Accordion.Header>{user.user_name}</Accordion.Header>
+                    <Accordion.Body>
+                      <Card className="p-3 mb-3">
+                        <Card.Title className="ms-3">Name: {user.user_name[0].toUpperCase() + user.user_name.slice(1)}</Card.Title>
+                        <Card.Text className="ms-3 mb-2">Email: {user.user_email}</Card.Text>
+                        <Card.Text className="ms-3">Phone: {user.phone_number}</Card.Text>
+                        <Card.Text className="ms-3">Member: {user.is_member ? 'Yes' : 'No'}</Card.Text>
+                        <Card.Text className="ms-3">Organisation Name: {user.organisation_name}</Card.Text>
+                        <Card.Text className="ms-3">Address: {user.address_line_1}, {user.address_line_2}, {user.city}, {user.state}, {user.country}. Pincode: {user.zip_code}</Card.Text>
+                        <Card.Text className="ms-3">Subscribed Plans: {JSON.parse(user.subscribed_plan || '[]')?.map(plan => {
+                          return servicesAndPlans.find(service => service.id === plan).service_name
+                        }).join(', ')}.</Card.Text>
+                        <Card.Text className="ms-3">Plan Type: {user.plan_type}</Card.Text>
+                        <Card.Text className="ms-3">Subscribed Office: {officeLocations?.find(office => office.id === user?.subscribed_office_id)?.building_name}</Card.Text>
+                        <Card.Text className="ms-3">Purchased Date: {user?.purchased_date ? new Date(user.purchased_date).toISOString().split('T')[0] : 'NA'}</Card.Text>
+                        <Card.Text className="ms-3">Renewal Date: {user.next_renewal_date ? new Date(user.next_renewal_date).toISOString().split('T')[0] : 'NA'}</Card.Text>                        
+                      </Card>
+                    </Accordion.Body>
+                  </Accordion.Item>
+                ))
+              }
+              </Accordion>
             </Card> :
             activeSidebar === "uploaded-files" ?
             <Card className="p-3">
@@ -612,21 +676,6 @@ const MyAccount = ({isAdmin, setCurrentTab, setBillingForm }) => {
                     <Accordion.Item eventKey={index} key={index}>
                       <Accordion.Header>{user}</Accordion.Header>
                       <Accordion.Body>
-                        <Card className="p-3 mb-3">
-                          <Card.Title className="ms-3">Name: {allUsers.find(users => users.user_email === user).user_name[0].toUpperCase() + allUsers.find(users => users.user_email === user).user_name.slice(1)}</Card.Title>
-                          <Card.Text className="ms-3 mb-2">Email: {user}</Card.Text>
-                          <Card.Text className="ms-3">Phone: {allUsers.find(users => users.user_email === user).phone_number}</Card.Text>
-                          <Card.Text className="ms-3">Member: {allUsers.find(users => users.user_email === user).is_member ? 'Yes' : 'No'}</Card.Text>
-                          <Card.Text className="ms-3">Organisation Name: {allUsers.find(users => users.user_email === user).organisation_name}</Card.Text>
-                          <Card.Text className="ms-3">Address: {allUsers.find(users => users.user_email === user).address_line_1}, {allUsers.find(users => users.user_email === user).address_line_2}, {allUsers.find(users => users.user_email === user).city}, {allUsers.find(users => users.user_email === user).state}, {allUsers.find(users => users.user_email === user).country}. Pincode: {allUsers.find(users => users.user_email === user).zip_code}</Card.Text>
-                          <Card.Text className="ms-3">Subscribed Plans: {JSON.parse(allUsers.find(users => users.user_email === user).subscribed_plan).map(plan => {
-                            return servicesAndPlans.find(service => service.id === plan).service_name
-                          }).join(', ')}.</Card.Text>
-                          <Card.Text className="ms-3">Plan Type: {allUsers.find(users => users.user_email === user).plan_type}</Card.Text>
-                          <Card.Text className="ms-3">Subscribed Office: {officeLocations?.find(office => office.id === allUsers.find(users => users.user_email === user)?.subscribed_office_id)?.building_name}</Card.Text>
-                          <Card.Text className="ms-3">Purchased Date: {new Date(allUsers.find(users => users.user_email === user).purchased_date).toISOString().split('T')[0]}</Card.Text>
-                          <Card.Text className="ms-3">Renewal Date: {new Date(allUsers.find(users => users.user_email === user).next_renewal_date).toISOString().split('T')[0]}</Card.Text>                        
-                        </Card>
                         <ul>
                           {
                             groupUploadedFiles()[user].map((file, index) => (
@@ -705,7 +754,7 @@ const MyAccount = ({isAdmin, setCurrentTab, setBillingForm }) => {
       </Row>
     </Container> : 
     <Container className="my-4">
-        <Alert className="text-center" variant="danger">You must login to view your message.</Alert>
+        {/* <Alert className="text-center" variant="danger">You must login to view your message.</Alert> */}
         <Row>
             <Col>
                 <Card className="p-3">
