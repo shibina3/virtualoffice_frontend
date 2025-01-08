@@ -87,7 +87,7 @@ export default function Home({ setPlanType, setCurrentTab }) {
         >
           <h5>Welcome To My Virtual Office!</h5>
           <h1 className="fw-bold">Your Gateway to Business Excellence</h1>
-          <h1 className="fw-bold">in Cheshire, Widnes</h1>
+          <h1 className="fw-bold">in Cheshire.</h1>
           <p>From flexible work arrangements to enhancing your professional image,</p>
           <p>we’re here to help you to work from anywhere.</p>
           <button className="btn btn-light btn-sm" onClick={() => setCurrentTab('pricing-plans')}>Choose Plans</button>
