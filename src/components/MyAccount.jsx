@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { Container, Row, Col, Button, Card, Alert, ListGroup, Form, Accordion, Image, Table, Tab } from "react-bootstrap";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { GrView } from "react-icons/gr";
 import { IoMdDownload } from "react-icons/io";
 import { FaRegFilePdf } from "react-icons/fa";
 import AWS from 'aws-sdk';
+import { useTable, usePagination, useGlobalFilter } from "react-table";
 
 const MyAccount = ({isAdmin, setCurrentTab, setBillingForm }) => {
   const [activeSidebar, setActiveSidebar] = useState("dashboard");
@@ -47,6 +48,65 @@ const MyAccount = ({isAdmin, setCurrentTab, setBillingForm }) => {
   });
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const fileInputRefs = useRef({});
+  const [searchInput, setSearchInput] = useState("");
+
+  const columns = useMemo(
+    () => [
+      { Header: "User", accessor: "user_email" },
+      {
+        Header: "Actions",
+        Cell: ({ row }) => (
+          <Form.Group
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "10px",
+            }}
+          >
+            <Form.Control
+              type="file"
+              multiple
+              onChange={(e) => handleFileChange(row.original.user_email, e.target.files)}
+              className="w-75"
+            />
+            <Button
+              variant="dark"
+              className="mt-2"
+              onClick={() => handleFileUpload(row.original.user_email)}
+            >
+              Upload
+            </Button>
+          </Form.Group>
+        ),
+      },
+    ],
+    []
+  );
+
+  const data = useMemo(() => allUsers, [allUsers]);
+
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    page,
+    prepareRow,
+    setGlobalFilter,
+    nextPage,
+    previousPage,
+    canNextPage,
+    canPreviousPage,
+    pageOptions,
+    state,
+  } = useTable(
+    { columns, data, initialState: { pageSize: 5 } },
+    useGlobalFilter,
+    usePagination
+  );
+
+  const { pageIndex } = state;
 
   const getUploadedFiles = async () => {
     const response = await fetch('https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node', {
@@ -602,42 +662,63 @@ const MyAccount = ({isAdmin, setCurrentTab, setBillingForm }) => {
             </Card> :
             activeSidebar === "uploads" ?
             <Card className="p-3">
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>User</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                  <tbody>
-                    {
-                      allUsers.map((user, index) => (
-                        <tr key={index}>
-                          <td>{user.user_email}</td>
-                          <td>
-                          <Form.Group style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '10px'}}>
-                            <Form.Control
-                              type="file"
-                              multiple
-                              ref={(ref) => (fileInputRefs.current[user.user_email] = ref)}
-                              onChange={(e) => handleFileChange(user.user_email, e.target.files)}
-                              className="w-75"
-                            />
-                            <Button
-                              variant="dark"
-                              className="mt-2"
-                              onClick={() => handleFileUpload(user.user_email)}
-                            >
-                              Upload
-                            </Button>
-                          </Form.Group>
-                          </td>
-                        </tr>
-                      ))
-                    }
-                  </tbody>
+              <div>
+                <Form.Control
+                  type="text"
+                  placeholder="Search users..."
+                  value={searchInput}
+                  onChange={(e) => {
+                    setSearchInput(e.target.value);
+                    setGlobalFilter(e.target.value); // Use react-table's global filter
+                  }}
+                  className="mb-3"
+                />
 
-              </Table>
+                <Table striped bordered hover {...getTableProps()}>
+                  <thead>
+                    {headerGroups.map((headerGroup) => (
+                      <tr {...headerGroup.getHeaderGroupProps()}>
+                        {headerGroup.headers.map((column) => (
+                          <th {...column.getHeaderProps()}>{column.render("Header")}</th>
+                        ))}
+                      </tr>
+                    ))}
+                  </thead>
+                  <tbody {...getTableBodyProps()}>
+                    {page.map((row) => {
+                      prepareRow(row);
+                      return (
+                        <tr {...row.getRowProps()}>
+                          {row.cells.map((cell) => (
+                            <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                          ))}
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </Table>
+
+                {/* Pagination */}
+                <div className="pagination d-flex justify-content-between align-items-center">
+                  <Button
+                    variant="outline-primary"
+                    onClick={() => previousPage()}
+                    disabled={!canPreviousPage}
+                  >
+                    Previous
+                  </Button>
+                  <span>
+                    Page {pageIndex + 1} of {pageOptions.length}
+                  </span>
+                  <Button
+                    variant="outline-primary"
+                    onClick={() => nextPage()}
+                    disabled={!canNextPage}
+                  >
+                    Next
+                  </Button>
+                </div>
+              </div>
             </Card> :
             activeSidebar === "all-users" ?
             <Card className="p-3">
