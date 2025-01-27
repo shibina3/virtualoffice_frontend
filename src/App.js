@@ -13,6 +13,8 @@ import Purchase from './components/Purchase';
 import Stripe from './components/Stripe';
 import PaymentSuccess from './components/PaymentSuccess';
 import UserDetail from './components/UserDetail';
+import TermsAndConditions from './components/TermsAndConditions';
+import PrivacyPolicy from './components/PrivacyPolicy';
 
 function App() {
   const [currentTab, setCurrentTab] = useState('home');
@@ -31,7 +33,7 @@ function App() {
   }, []);
 
   const fetchData = async () => {
-    const response = await fetch('https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node', {
+    const response = await fetch('https://yal3d14xdf.execute-api.eu-north-1.amazonaws.com/dev/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -59,9 +61,11 @@ function App() {
         !isAdmin && currentTab === 'billing' ? <Stripe billingData={billingData} setCurrentTab={setCurrentTab} /> :
         !isAdmin && currentTab === 'payment-success' ? <PaymentSuccess /> :
         !isAdmin && currentTab === 'user-details-submission' ? <UserDetail setCurrentTab={setCurrentTab} setIsDetailsSubmitted={setIsDetailsSubmitted} /> :
+        !isAdmin && currentTab === 'terms-and-conditions' ? <TermsAndConditions /> :
+        !isAdmin && currentTab === 'privacy-policy' ? <PrivacyPolicy /> :
         null
       }
-      <Footer />
+      <Footer setCurrentTab={setCurrentTab} />
     </>
   );
 }

@@ -118,7 +118,7 @@ const MyAccount = ({ isAdmin, setCurrentTab, setBillingForm }) => {
   const { pageIndex } = state;
 
   const getUploadedFiles = async () => {
-    const response = await fetch('https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node', {
+    const response = await fetch('https://yal3d14xdf.execute-api.eu-north-1.amazonaws.com/dev/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -141,7 +141,7 @@ const MyAccount = ({ isAdmin, setCurrentTab, setBillingForm }) => {
 
   const getUserDetails = async (user_email) => {
 
-    const response = await fetch('https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node', {
+    const response = await fetch('https://yal3d14xdf.execute-api.eu-north-1.amazonaws.com/dev/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -154,7 +154,7 @@ const MyAccount = ({ isAdmin, setCurrentTab, setBillingForm }) => {
       setOfficeLocations(data.data.office_locations);
     }
 
-    const userDetailsRes = await fetch("https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node", {
+    const userDetailsRes = await fetch("https://yal3d14xdf.execute-api.eu-north-1.amazonaws.com/dev/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -170,7 +170,7 @@ const MyAccount = ({ isAdmin, setCurrentTab, setBillingForm }) => {
         email: userDetailsData.user.user_email,
         phone_number: userDetailsData.user.phone_number,
         is_member: userDetailsData.user.is_member,
-        subscribed_plans: userDetailsData.user?.subscribed_plan?.length ? JSON.parse(userDetailsData.user.subscribed_plan) : [],
+        subscribed_plans: userDetailsData.user?.subscribed_plan?.length ? userDetailsData.user.subscribed_plan : [],
         payments: userDetailsData.user.payments,
         ...userDetailsData.user
       });
@@ -180,7 +180,7 @@ const MyAccount = ({ isAdmin, setCurrentTab, setBillingForm }) => {
         email: userDetailsData.user.user_email,
       });
 
-      const allUsersRes = await fetch("https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node", {
+      const allUsersRes = await fetch("https://yal3d14xdf.execute-api.eu-north-1.amazonaws.com/dev/", {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
@@ -204,7 +204,7 @@ const MyAccount = ({ isAdmin, setCurrentTab, setBillingForm }) => {
   const handleUpdateAccDetails = async () => {
     const isFormValid = validateForm('change-acc-details');
     if (isFormValid) {
-      const updateAccDetailsRes = await fetch("https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node", {
+      const updateAccDetailsRes = await fetch("https://yal3d14xdf.execute-api.eu-north-1.amazonaws.com/dev/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -282,7 +282,7 @@ const MyAccount = ({ isAdmin, setCurrentTab, setBillingForm }) => {
     e.preventDefault();
     const isFormValid = validateForm('login');
     if (isFormValid) {
-      const loginRes = await fetch("https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node", {
+      const loginRes = await fetch("https://yal3d14xdf.execute-api.eu-north-1.amazonaws.com/dev/", {
         method: "POST",
         type: "no-cors",
         headers: {
@@ -300,7 +300,7 @@ const MyAccount = ({ isAdmin, setCurrentTab, setBillingForm }) => {
           email: loginData.user.user_email,
           phone_number: loginData.user.phone_number,
           is_member: loginData.user.is_member,
-          subscribed_plans: loginData.user?.subscribed_plan?.length ? JSON.parse(loginData.user.subscribed_plan) : [],
+          subscribed_plans: loginData.user?.subscribed_plan?.length ? loginData.user.subscribed_plan : [],
           payments: loginData.user.payments,
           ...loginData.user
         });
@@ -321,7 +321,7 @@ const MyAccount = ({ isAdmin, setCurrentTab, setBillingForm }) => {
     e.preventDefault();
     const isFormValid = validateForm('register');
     if (isFormValid) {
-      const registerRes = await fetch("https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node", {
+      const registerRes = await fetch("https://yal3d14xdf.execute-api.eu-north-1.amazonaws.com/dev/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -371,20 +371,20 @@ const MyAccount = ({ isAdmin, setCurrentTab, setBillingForm }) => {
     let billingData = {
       selectedPlan: userDetails.plan_type,
       selectedOffice: userDetails.subscribed_office_id,
-      selectedService: JSON.parse(userDetails.subscribed_plan)
+      selectedService: userDetails.subscribed_plan
     }
     setBillingForm(billingData);
   }
 
   const uploadImageToS3 = async (file) => {
     const s3 = new AWS.S3({
-      accessKeyId: "AKIARKBLHXJBJMOVZ2GJ",
-      secretAccessKey: "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",
+      accessKeyId: "AKIAXGZAL7SEB377ECFN", //"AKIARKBLHXJBJMOVZ2GJ",
+      secretAccessKey: "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", //"wWeSBWpfcqGGiNK8Fw5VG5+H+BeHjQwTgf75HWD3",
       region: 'eu-north-1',
     });
     const user_email = localStorage.getItem('user_email');
     const params = {
-      Bucket: 'myvirtualoffices.uk',
+      Bucket: 'myvirtualoffice.uk',
       Key: `uploads/${user_email}/files/${file.name}`,
       Body: file,
       ContentType: file.type,
@@ -409,7 +409,7 @@ const MyAccount = ({ isAdmin, setCurrentTab, setBillingForm }) => {
     }
 
     const uploadFileRes = await fetch(
-      "https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node",
+      "https://yal3d14xdf.execute-api.eu-north-1.amazonaws.com/dev/",
       {
         method: "POST",
         headers: {
@@ -458,12 +458,12 @@ const MyAccount = ({ isAdmin, setCurrentTab, setBillingForm }) => {
 
   const deleteFromS3 = async (file_path) => {
     const s3 = new AWS.S3({
-      accessKeyId: "AKIARKBLHXJBJMOVZ2GJ",
-      secretAccessKey: "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",
+      accessKeyId: "AKIAXGZAL7SEB377ECFN",
+      secretAccessKey: "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",
       region: 'eu-north-1',
     });
     const params = {
-      Bucket: 'myvirtualoffices.uk',
+      Bucket: 'myvirtualoffice.uk',
       Key: file_path,
     };
     return s3.deleteObject(params).promise();
@@ -473,7 +473,7 @@ const MyAccount = ({ isAdmin, setCurrentTab, setBillingForm }) => {
     const deleteFileFroms3 = await deleteFromS3(file_path);
 
     if (deleteFileFroms3) {
-      const deleteFileRes = await fetch("https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node", {
+      const deleteFileRes = await fetch("https://yal3d14xdf.execute-api.eu-north-1.amazonaws.com/dev/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -764,7 +764,7 @@ const MyAccount = ({ isAdmin, setCurrentTab, setBillingForm }) => {
                                       Pincode: {user.zip_code}
                                     </Card.Text>
                                     <Card.Text className="ms-3">
-                                      Subscribed Plans: {JSON.parse(user.subscribed_plan || '[]')?.map(plan => {
+                                      Subscribed Plans: {(user?.subscribed_plan || [])?.map(plan => {
                                         return servicesAndPlans.find(service => service.id === plan).service_name;
                                       }).join(', ')}.
                                     </Card.Text>
@@ -812,7 +812,7 @@ const MyAccount = ({ isAdmin, setCurrentTab, setBillingForm }) => {
                                           <a
                                             className="ms-5 text-black cursor-pointer"
                                             href={
-                                              'https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node' +
+                                              'https://yal3d14xdf.execute-api.eu-north-1.amazonaws.com/dev/' +
                                               file.file_path.slice(1)
                                             }
                                             target="_blank"
@@ -823,7 +823,7 @@ const MyAccount = ({ isAdmin, setCurrentTab, setBillingForm }) => {
                                           <a
                                             className="ms-5 text-black cursor-pointer"
                                             href={
-                                              'https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node' +
+                                              'https://yal3d14xdf.execute-api.eu-north-1.amazonaws.com/dev/' +
                                               file.file_path.slice(1)
                                             }
                                             target="_blank"
@@ -836,7 +836,7 @@ const MyAccount = ({ isAdmin, setCurrentTab, setBillingForm }) => {
                                             onClick={() =>
                                               handleDeleteFile(
                                                 file.id,
-                                                'https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node' +
+                                                'https://yal3d14xdf.execute-api.eu-north-1.amazonaws.com/dev/' +
                                                 file.file_path.slice(1)
                                               )
                                             }

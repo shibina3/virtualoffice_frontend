@@ -29,7 +29,7 @@ export default function UserDetail({ setCurrentTab, setIsDetailsSubmitted }) {
     }, []);
 
     const fetchData = async () => {
-        const response = await fetch('https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node', {
+        const response = await fetch('https://yal3d14xdf.execute-api.eu-north-1.amazonaws.com/dev/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -62,13 +62,13 @@ export default function UserDetail({ setCurrentTab, setIsDetailsSubmitted }) {
 
     const uploadImageToS3 = async (file) => {
         const s3 = new AWS.S3({
-          accessKeyId: "AKIARKBLHXJBJMOVZ2GJ",
-          secretAccessKey: "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",
+          accessKeyId: "AKIAXGZAL7SEB377ECFN",
+          secretAccessKey: "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",
           region: 'eu-north-1',
         });
         const user_email = localStorage.getItem('user_email');
         const params = {
-          Bucket: 'myvirtualoffices.uk',
+          Bucket: 'myvirtualoffice.uk',
           Key: `uploads/${user_email}/bio/${file.name}`,
           Body: file,
           ContentType: file.type,
@@ -113,7 +113,7 @@ export default function UserDetail({ setCurrentTab, setIsDetailsSubmitted }) {
                 path: "/submit-details"
             }
 
-            const submitData = await axios.post('https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node', payload, {
+            const submitData = await axios.post('https://yal3d14xdf.execute-api.eu-north-1.amazonaws.com/dev/', payload, {
                 headers: {
                     'Content-Type': 'application/json'
                 }

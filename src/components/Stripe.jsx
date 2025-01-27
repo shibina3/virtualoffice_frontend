@@ -5,14 +5,14 @@ import CheckoutForm from "./CheckoutForm";
 import { Container } from "react-bootstrap";
 
 // Replace with your Stripe publishable key
-const stripePromise = loadStripe("pk_test_51BTUDGJAJfZb9HEBwDg86TN1KNprHjkfipXmEDMb0gSCassK5T3ZfxsAbcgKVmAIXF7oZ6ItlZZbXO6idTHE67IM007EwQ4uN3");
+const stripePromise = loadStripe("pk_live_51QMmnBHdKguquegyMRrvAsafoFw5KsQ1FfBgqqc0ZmfRlT44QzhStsZfzfeaGJ6iBEWTJWr5xRRTb5jT9hIMI4Q700MO1sauyH");
 
 const Stripe = ({ billingData, setCurrentTab }) => {
   const [clientSecret, setClientSecret] = useState("");
 
   useEffect(() => {
     // Create PaymentIntent as soon as the page loads
-    fetch("https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node", {
+    fetch("https://yal3d14xdf.execute-api.eu-north-1.amazonaws.com/dev/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ amount: parseInt(billingData.total_amount), path: "/create-payment-intent" }),

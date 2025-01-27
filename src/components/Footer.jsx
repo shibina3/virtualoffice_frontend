@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Row, Col, Form, Button, Image } from "react-bootstrap";
 
-const Footer = () => {
+const Footer = ({ setCurrentTab }) => {
   return (
     <footer className="footer bg-white border-top">
       <Container>
@@ -21,13 +21,13 @@ const Footer = () => {
             <h5 className="mb-3">Useful Links</h5>
             <ul className="list-unstyled">
               <li>
-                <a href="#" className="text-muted">Terms and Conditions</a>
+                <a className="text-muted cursor-pointer" onClick={() => setCurrentTab('terms-and-conditions')}>Terms and Conditions</a>
               </li>
               <li>
-                <a href="#" className="text-muted">Privacy Policy</a>
+                <a className="text-muted cursor-pointer" onClick={() => setCurrentTab('privacy-policy')}>Privacy Policy</a>
               </li>
               <li>
-                <a href="#" className="text-muted">Support</a>
+                <a className="text-muted cursor-pointer" onClick={() => setCurrentTab('contact')}>Support</a>
               </li>
             </ul>
           </Col>
@@ -37,13 +37,13 @@ const Footer = () => {
             <h5 className="mb-3">Quick Links</h5>
             <ul className="list-unstyled">
               <li>
-                <a href="#" className="text-muted">About Us</a>
+                <a className="text-muted cursor-pointer" onClick={() => setCurrentTab('about')}>About Us</a>
               </li>
               <li>
-                <a href="#" className="text-muted">Services</a>
+                <a className="text-muted cursor-pointer" onClick={() => setCurrentTab('contact')}>Contact Us</a>
               </li>
               <li>
-                <a href="#" className="text-muted">Pricing</a>
+                <a className="text-muted cursor-pointer" onClick={() => setCurrentTab('pricing-plans')}>Pricing</a>
               </li>
             </ul>
           </Col>

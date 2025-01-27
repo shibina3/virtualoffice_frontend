@@ -10,7 +10,7 @@ export default function Purchase({ planType, setCurrentTab, setBillingData, isDe
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://44qtr3ig0l.execute-api.eu-north-1.amazonaws.com/default/virtualoffice-node', {
+        const response = await fetch('https://yal3d14xdf.execute-api.eu-north-1.amazonaws.com/dev/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
