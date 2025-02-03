@@ -55,8 +55,8 @@ export default function Home({ setPlanType, setCurrentTab }) {
     }
   }
 
-  const handlePurchase = () => {
-    setPlanType('monthly');
+  const handlePurchase = (type) => {
+    setPlanType(type);
     setCurrentTab('purchase');
   }
 
@@ -116,7 +116,7 @@ export default function Home({ setPlanType, setCurrentTab }) {
                   <Card.Text className='text-shadow'>
                     {service.description}
                   </Card.Text>
-                  <Button variant="dark" onClick={handlePurchase}>Purchase</Button>
+                  <Button variant="dark" onClick={() => handlePurchase('monthly')}>Purchase</Button>
                 </Card.Body>
               </Card>
             </Col>
@@ -141,7 +141,7 @@ export default function Home({ setPlanType, setCurrentTab }) {
                   <Card.Text className='text-shadow'>
                     {service.description}
                   </Card.Text>
-                  <Button variant="dark" onClick={handlePurchase}>Purchase</Button>
+                  <Button variant="dark" onClick={() => handlePurchase('monthly')}>Purchase</Button>
                 </Card.Body>
               </Card>
             </Col>
@@ -168,14 +168,14 @@ export default function Home({ setPlanType, setCurrentTab }) {
         <Col className='p-4 price-card middle-line'>
           <Card className='pricetag'>
             <Card.Body>
-              <Card.Title>Montlhy Plan</Card.Title>
+              <Card.Title>Monthly Plan</Card.Title>
               <Card.Text>
                 <span><span className='fs-1 fw-bold'>£{servicesAndPlans.reduce((acc, service) => acc + parseFloat(service.montly_price), 0)}</span>/ Per Month</span>
               </Card.Text>
               <Card.Text>
                 <span className='text-muted'>Select the services and complete a quick onboarding process to activate your virtual office.</span>
               </Card.Text>
-              <Button variant="dark" onClick={handlePurchase}>Purchase</Button>
+              <Button variant="dark" onClick={() => handlePurchase('monthly')}>Purchase</Button>
             </Card.Body>
           </Card>
           <div className='mt-4'>
@@ -201,7 +201,7 @@ export default function Home({ setPlanType, setCurrentTab }) {
               <Card.Text>
                 <span className='text-muted'>Instantly access your new business address, phone services, and additional features.</span>
               </Card.Text>
-              <Button variant="dark" onClick={() => setPlanType('yearly')}>Purchase</Button>
+              <Button variant="dark" onClick={() => handlePurchase('yearly')}>Purchase</Button>
             </Card.Body>
           </Card>
           <div className='mt-4'>

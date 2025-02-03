@@ -74,6 +74,10 @@ export default function Purchase({ planType, setCurrentTab, setBillingData, isDe
   };
 
   const handleBilling = () => {
+    if(localStorage.getItem('user_email') === null) {
+      setAlertMsg('Please login or register to purchase a plan');
+      return;
+    }
     if(isDetailsSubmitted === 0) {
       setAlertMsg('Please complete the verification to purchase a plan');
       return;

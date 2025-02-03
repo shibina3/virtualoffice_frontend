@@ -6,7 +6,7 @@ import AWS from 'aws-sdk';
 export default function UserDetail({ setCurrentTab, setIsDetailsSubmitted }) {
     const [userDetailForm, setUserDetailForm] = useState({
         organisation_name: '',
-        representation_type: '',
+        // representation_type: '',
         address_line_1: '',
         address_line_2: '',
         city: '',
@@ -39,7 +39,7 @@ export default function UserDetail({ setCurrentTab, setIsDetailsSubmitted }) {
         const {user: data} = await response.json();
         setUserDetailForm({
             organisation_name: data.organisation_name || '',
-            representation_type: data.representation_type || '',
+            // representation_type: data.representation_type || '',
             address_line_1: data.address_line_1 || '',
             address_line_2: data.address_line_2 || '',
             city: data.city || '',
@@ -92,7 +92,7 @@ export default function UserDetail({ setCurrentTab, setIsDetailsSubmitted }) {
 
     const validateForm = () => {
         // validate all fields except source_of_discovery and comments
-        const requiredFields = ['organisation_name', 'representation_type', 'address_line_1', 'address_line_2', 'city', 'state', 'country', 'zip_code', 'purpose', 'service_start_date', 'post_handling', 'photo_proof', 'proof_of_address'];
+        const requiredFields = ['organisation_name', 'address_line_1', 'address_line_2', 'city', 'state', 'country', 'zip_code', 'purpose', 'service_start_date', 'post_handling', 'photo_proof', 'proof_of_address'];
         for (let i = 0; i < requiredFields.length; i++) {
             if (!userDetailForm[requiredFields[i]]) {
                 return false;
@@ -136,10 +136,10 @@ export default function UserDetail({ setCurrentTab, setIsDetailsSubmitted }) {
                         <Form.Control type="text" placeholder="Enter organisation name" value={userDetailForm.organisation_name} onChange={(e) => handleChange('organisation_name', e.target.value)} />
                     </Form.Group>
 
-                    <Form.Group className="mb-3" controlId="formBasicEmail">
+                    {/* <Form.Group className="mb-3" controlId="formBasicEmail">
                         <Form.Label className='ps-1'>Representation Type *</Form.Label>
                         <Form.Control type="text" placeholder="Enter representation type" value={userDetailForm.representation_type} onChange={(e) => handleChange('representation_type', e.target.value)} />
-                    </Form.Group>
+                    </Form.Group> */}
 
                     <Form.Group className="mb-3" controlId="formBasicEmail">
                         <Form.Label className='ps-1'>Address Line 1 *</Form.Label>

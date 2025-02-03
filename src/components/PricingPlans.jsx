@@ -80,7 +80,7 @@ export default function PricingPlans({ setCurrentTab, setPlanType }) {
             <Col className='p-4 price-card middle-line'>
             <Card className='pricetag'>
                 <Card.Body>
-                <Card.Title>Montlhy Plan</Card.Title>
+                <Card.Title>Monthly Plan</Card.Title>
                 <Card.Text>
                     <span><span className='fs-1 fw-bold'>£{servicesAndPlans.reduce((acc, service) => acc + parseFloat(service.montly_price), 0)}</span>/ Per Month</span>
                 </Card.Text>

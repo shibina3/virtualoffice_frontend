@@ -34,6 +34,7 @@ const MyAccount = ({ isAdmin, setCurrentTab, setBillingForm }) => {
     phone_number: "",
     password: "",
     repeatPassword: "",
+    termsAndConditions: false,
   });
   const [changeAccDetailsForm, setChangeAccDetailsForm] = useState({
     name: "",
@@ -249,7 +250,8 @@ const MyAccount = ({ isAdmin, setCurrentTab, setBillingForm }) => {
         !registerForm.name ||
         !registerForm.phone_number ||
         !registerForm.password ||
-        !registerForm.repeatPassword
+        !registerForm.repeatPassword ||
+        !registerForm.termsAndConditions
       ) {
         isValid = false;
         setAlertMsg("Please fill all the fields.");
@@ -262,6 +264,9 @@ const MyAccount = ({ isAdmin, setCurrentTab, setBillingForm }) => {
       } else if (registerForm.password.length < 6) {
         isValid = false;
         setAlertMsg("Password should be at least 6 characters.");
+      } else if(!registerForm.termsAndConditions) {
+        isValid = false;
+        setAlertMsg("Please accept the terms and conditions.");
       }
     } else if (form === "change-acc-details") {
       if (!changeAccDetailsForm.password || !changeAccDetailsForm.newPassword || !changeAccDetailsForm.confirmNewPassword) {
@@ -962,6 +967,16 @@ const MyAccount = ({ isAdmin, setCurrentTab, setBillingForm }) => {
                 <Form.Group className="mb-3">
                   <Form.Label>Repeat Password <span className="required-text">*</span></Form.Label>
                   <Form.Control type="password" value={registerForm.repeatPassword} onChange={(e) => setRegisterForm({ ...registerForm, repeatPassword: e.target.value })} />
+                </Form.Group>
+
+                {/* checkbox for terms and conditions */}
+                <Form.Group className="mb-3">
+                  <Form.Check
+                    type="checkbox"
+                    label="Accept to terms and conditions and privacy policy before registering"
+                    value={registerForm.termsAndConditions}
+                    onChange={(e) => setRegisterForm({ ...registerForm, termsAndConditions: e.target.checked })}
+                  />
                 </Form.Group>
                 <Col className="d-flex justify-content-center align-items-center">
                   <Button variant="dark" type="submit" onClick={handleRegister}>
