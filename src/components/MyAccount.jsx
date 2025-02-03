@@ -250,8 +250,7 @@ const MyAccount = ({ isAdmin, setCurrentTab, setBillingForm }) => {
         !registerForm.name ||
         !registerForm.phone_number ||
         !registerForm.password ||
-        !registerForm.repeatPassword ||
-        !registerForm.termsAndConditions
+        !registerForm.repeatPassword
       ) {
         isValid = false;
         setAlertMsg("Please fill all the fields.");
